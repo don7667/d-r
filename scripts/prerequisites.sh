@@ -11,7 +11,19 @@ service docker start
 curl -L "https://github.com/docker/compose/releases/download/1.9.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
+current_user=''
+if [ "$SUDO_USER" ];
+then
+    current_user="$SUDO_USER"
+elif [ $USER != "root" ];
+then
+    current_user="$USER"
+else
+    echo "Input your user name, please:"
+    read current_user
+fi
+
 # Giving non-root access (optional)
 groupadd docker
-gpasswd -a attic docker
+gpasswd -a "$current_user" docker
 service docker restart
